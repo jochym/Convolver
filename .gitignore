@@ -5,6 +5,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Editor backup
+*~
+
 # Distribution / packaging
 .Python
 env/
