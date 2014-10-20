@@ -9,11 +9,12 @@ ExpYScale=0.1
 
 from pylab import *
 import sys,string
-from Scientific.Functions.Interpolation import InterpolatingFunction
-from Scientific import N
 from matplotlib.widgets import Slider, Button, CheckButtons
 from scipy.integrate import simps
+from scipy.interpolate import interp1d
 import scipy
+import numpy
+from numpy import loadtxt, arange
 
 def Gauss(x,hw):
     s=hw/(2*sqrt(log(2)))
@@ -62,9 +63,7 @@ def changeData(label):
 
 
 try:
-    data=open(sys.argv[1],'r').readlines()
-    data=[[string.atof(x) for x in l.split()] for l in data if len(l.split())>1]
-    data=[[d[0] for d in data],[d[1] for d in data]]
+    data=loadtxt(sys.argv[1]).T
 except IndexError:
     print "Give data file to convolve as first argument"
     raise
@@ -82,20 +81,18 @@ stepd=(xmax-xmin)/max(len(data[0]),100)
 steph=hw/10
 step=min(stepd,steph)
 
-cx=N.arrayrange(xmin,xmax+step,step)
+cx=arange(xmin,xmax+step,step)
 xmin=cx[0]
 xmax=cx[-1]
 xmed=(xmin+xmax)/2.
 
-di=InterpolatingFunction((N.array(data[0]),), N.array(data[1]), 0)
-da=N.array([di(x) for x in cx])
+di=interp1d(data[0],data[1])
+da=di(cx)
 
 try:
-    edata=open(sys.argv[2],'r').readlines()
-    edata=[[string.atof(x) for x in l.split()] for l in edata if len(l.split())>1]
-    edata=[[d[0]*ExpXScale for d in edata],[d[1]*ExpYScale for d in edata]]
-    edata=array(edata)
-    edata[1]=edata[1]*integral(cx,da)/integral(edata[0],edata[1])
+    edata=loadtxt(sys.argv[2]).T
+    edata=array([edata[0]*ExpXScale,edata[1]*ExpYScale])
+    edata[1]=edata[1]*simps(da,cx)/simps(edata[1],edata[0])
     #print edata
 except IndexError:
     edata=[[],[]]
