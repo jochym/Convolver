@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 # $Id: convolv.py 82 2007-12-14 09:02:08Z Paweł T. Jochym $
 
+# Example of experimental data scaling
 ExpXScale=0.2417963
 ExpYScale=0.1
-#ExpXScale=1
-#ExpYScale=1
+
+# No scaling of experimental data by default
+# TODO: Implement this as command line switches
+ExpXScale=1
+ExpYScale=1
 
 from pylab import *
 import sys,string
@@ -81,7 +85,7 @@ stepd=(xmax-xmin)/max(len(data[0]),100)
 steph=hw/10
 step=min(stepd,steph)
 
-cx=arange(xmin,xmax+step,step)
+cx=linspace(xmin,xmax,1+int(xrng/step))
 xmin=cx[0]
 xmax=cx[-1]
 xmed=(xmin+xmax)/2.
@@ -95,6 +99,7 @@ try:
     edata[1]=edata[1]*simps(da,cx)/simps(edata[1],edata[0])
     #print edata
 except IndexError:
+    # No experimental data. Fill in the structure.
     edata=[[],[]]
 
 
