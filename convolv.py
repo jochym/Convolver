@@ -66,7 +66,14 @@ def changeData(label):
     draw()
 
 
-parser = argparse.ArgumentParser(description='Calculate convolution of theoretical data with instrument curves.')
+parser = argparse.ArgumentParser(
+            description='Calculate convolution of theoretical data with instrument curves.',
+            epilog='''
+            The program produces convolved data on standard output.
+            The convolution is printed in three columns: X, Gauss, Lorenz.
+            The L and G columns are present even if resp. function was not used.
+            '''
+            )
 
 parser.add_argument('-ex','--exscale', type=float, dest='ExpXScale',
                     help='X scale for exp. data (1.0)',
