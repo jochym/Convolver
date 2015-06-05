@@ -7,9 +7,8 @@ ExpXScale=0.2417963
 ExpYScale=0.1
 
 # No scaling of experimental data by default
-# TODO: Implement this as command line switches
-ExpXScale=1
-ExpYScale=1
+ExpXScale=1.0
+ExpYScale=1.0
 
 from pylab import *
 import sys,string
@@ -19,6 +18,8 @@ from scipy.interpolate import interp1d
 import scipy
 import numpy
 from numpy import loadtxt, arange
+
+import argparse
 
 def Gauss(x,hw):
     s=hw/(2*sqrt(log(2)))
@@ -65,9 +66,28 @@ def changeData(label):
     draw()
 
 
+parser = argparse.ArgumentParser(description='Calculate convolution of theoretical data with instrument curves.')
+
+parser.add_argument('-ex','--exscale', type=float, dest='ExpXScale',
+                    help='X scale for exp. data (1.0)',
+                    default=1.0)
+
+parser.add_argument('-ey','--eyscale', type=float, dest='ExpYScale',
+                    help='Y scale for exp. data (1.0)',
+                    default=1.0)
+
+parser.add_argument('theory', nargs=1,
+                        help='Theory data file')
+parser.add_argument('exper', nargs='?',
+                        help='Experimental data file (optional)', 
+                        default=None )
+
+args = parser.parse_args()
+
+print(args)
 
 try:
-    data=loadtxt(sys.argv[1]).T
+    data=loadtxt(args.theory[0]).T
 except IndexError:
     print("\nERROR: No input data.\nGive data file to convolve as first argument.\n")
     sys.exit(1)
@@ -93,15 +113,17 @@ xmed=(xmin+xmax)/2.
 di=interp1d(data[0],data[1])
 da=di(cx)
 
-try:
-    edata=loadtxt(sys.argv[2]).T
-    edata=array([edata[0]*ExpXScale,edata[1]*ExpYScale])
-    edata[1]=edata[1]*simps(da,cx)/simps(edata[1],edata[0])
-    #print edata
-except IndexError:
-    # No experimental data. Fill in the structure.
+if args.exper is not None :
+    try:
+        edata=loadtxt(args.exper).T
+        edata=array([edata[0]*args.ExpXScale,edata[1]*args.ExpYScale])
+        edata[1]=edata[1]*simps(da,cx)/simps(edata[1],edata[0])
+        #print edata
+    except IndexError:
+        # No experimental data. Fill in the structure.
+        edata=[[],[]]
+else :
     edata=[[],[]]
-
 
 #print xmin, xmax, xmed, step, cx, cx-xmed
 gauss=step*Gauss(cx-xmed,hw)
