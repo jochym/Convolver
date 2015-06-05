@@ -84,7 +84,7 @@ parser.add_argument('exper', nargs='?',
 
 args = parser.parse_args()
 
-print(args)
+#print(args)
 
 try:
     data=loadtxt(args.theory[0]).T
