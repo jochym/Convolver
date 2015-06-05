@@ -69,8 +69,8 @@ def changeData(label):
 try:
     data=loadtxt(sys.argv[1]).T
 except IndexError:
-    print "Give data file to convolve as first argument"
-    raise
+    print("\nERROR: No input data.\nGive data file to convolve as first argument.\n")
+    sys.exit(1)
 
 
 
