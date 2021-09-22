@@ -165,11 +165,11 @@ subplots_adjust(bottom=0.25, right=0.95)
 
 
 axcolor = 'lightgoldenrodyellow'
-axfwhmG = axes([0.1, 0.15, 0.6, 0.03], axisbg=axcolor)
+axfwhmG = axes([0.1, 0.15, 0.6, 0.03], facecolor=axcolor)
 fwhmG = Slider(axfwhmG, 'Gauss', 5*step, xrng/2, valinit=hw)
 fwhmG.on_changed(updateG)
 
-axfwhmL = axes([0.1, 0.05, 0.6, 0.03], axisbg=axcolor)
+axfwhmL = axes([0.1, 0.05, 0.6, 0.03], facecolor=axcolor)
 fwhmL = Slider(axfwhmL, 'Lorentz', 5*step, xrng/2, valinit=hw)
 fwhmL.on_changed(updateL)
 
